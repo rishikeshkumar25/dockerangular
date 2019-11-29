@@ -1,12 +1,13 @@
-FROM node:alpine AS builder
+# base image
+FROM node:latest as node
 
+# set working directory
 WORKDIR /app
 
+# install and cache app dependencies
 COPY . .
-
-RUN npm install && \
-    npm run build
+RUN npm install
+RUN npm run build --prod
 
 FROM nginx:alpine
-
-COPY --from=builder /app/dist/* /usr/share/nginx/html/
+COPY --from=node /app/dist/dockerangular /usr/share/ngnix/html
